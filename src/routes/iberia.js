@@ -74,16 +74,26 @@ router.
         console.log("Error:" + err);
       });
   })
-get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
+router.get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
   const destino = req.params.destino;
   const origen = req.params.origen;
   iberia.find({
-    where: { Destino: destino, Origen: origen ,Destino:mongoose.}
-  }).then((Vuelos) => {
+    where: { Destino: destino, Origen: origen, Destino: mongoose.}
+  }).then((vuelos) => {
     res.send(vuelos.reduce((vueloMap, item) => {
       vueloMap[item.id] = item
       return vueloMap
     }, {}))
+  }).error(function (err) {
+    console.log("Error:" + err);
+  });
+})
+router.put('/vuelos/fecha/origen/:id', (req, res, next) => {
+  iberia.findOneAndUpdate(
+    { IdVuelo: req.params.id },
+    { $inc: {plazas: -1}}
+  ).then((Vuelos) => {
+    res.send(Vuelos);
   }).error(function (err) {
     console.log("Error:" + err);
   });
