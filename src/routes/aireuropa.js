@@ -62,10 +62,11 @@ router.
     });
   })
 router.
-  get('/vuelos/fecha/origen/:destino', (req, res, next) => {
+  get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
     const destino = req.params.destino;
+    const origen = req.params.origen;
     Vuelos.findAll({
-      where: { Destino: destino }
+      where: { Destino: destino, Origen: origen }
     }).then((Vuelos) => {
       res.send(Vuelos);
     }).error(function (err) {
@@ -103,10 +104,10 @@ router.delete('/', (req, res, next) => {
     console.log("Error:" + err);
   });
 })*/
-router.put('/vuelos/fecha/origen/:destino', (req, res, next) => {
+router.put('/vuelos/fecha/origen/:id', (req, res, next) => {
   Vuelos.update(
     { plazas: sequelize.literal('plazas - 1') },
-    { where: { Destino: req.params.destino } }
+    { where: { IdVuelo: req.params.id } }
   ).then((Vuelos) => {
     res.send(Vuelos);
   }).error(function (err) {

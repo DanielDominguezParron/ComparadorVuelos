@@ -63,21 +63,29 @@ const iberia = connection.model('vuelos', flySchema)
 const router = express.Router()
 router.
   get('/vuelos/fecha/origen/', (req, res, next) => {
-    iberia.find({}, (err, vuelos) =>
-      res.send(vuelos.reduce((vueloMap, item) => {
-        vueloMap[item.id] = item
-        return vueloMap
-      }, {})));
+    iberia.find({})
+      .then((vuelos) => {
+        res.send(vuelos.reduce((vueloMap, item) => {
+          vueloMap[item.id] = item
+          return vueloMap
+        }, {}))
+      })
+      .error(function (err) {
+        console.log("Error:" + err);
+      });
   })
-router.
-  get('/vuelos/fecha/origen/:destino', (req, res, next) => {
-    const id = req.params.destino;
-    iberia.find({
-      where: { IdVuelo: id }
-    }).then((Vuelos) => {
-      res.send(Vuelos);
-    }).error(function (err) {
-      console.log("Error:" + err);
-    });
-  })
+get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
+  const destino = req.params.destino;
+  const origen = req.params.origen;
+  iberia.find({
+    where: { Destino: destino, Origen: origen ,Destino:mongoose.}
+  }).then((Vuelos) => {
+    res.send(vuelos.reduce((vueloMap, item) => {
+      vueloMap[item.id] = item
+      return vueloMap
+    }, {}))
+  }).error(function (err) {
+    console.log("Error:" + err);
+  });
+})
 export default router
