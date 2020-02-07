@@ -27,11 +27,11 @@ const flySchema = new mongoose.Schema(
       type: String,
       trim: true, required: true
     },
-    Origen: {
+    origen: {
       type: String,
       trim: true, required: true
     },
-    Destino: {
+    destino: {
       type: String,
       trim: true, required: true
     },
@@ -63,39 +63,21 @@ const iberia = connection.model('vuelos', flySchema)
 const router = express.Router()
 router.
   get('/vuelos/fecha/origen/', (req, res, next) => {
-    iberia.find({})
-      .then((vuelos) => {
-        res.send(vuelos.reduce((vueloMap, item) => {
-          vueloMap[item.id] = item
-          return vueloMap
-        }, {}))
-      })
-      .error(function (err) {
-        console.log("Error:" + err);
-      });
+    iberia.find({}, (err, vuelos) =>
+      res.send(vuelos));
   })
 router.get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
   const destino = req.params.destino;
   const origen = req.params.origen;
-  iberia.find({
-    where: { Destino: destino, Origen: origen, Destino: mongoose.}
-  }).then((vuelos) => {
-    res.send(vuelos.reduce((vueloMap, item) => {
-      vueloMap[item.id] = item
-      return vueloMap
-    }, {}))
-  }).error(function (err) {
-    console.log("Error:" + err);
+  iberia.find({ origen: origen, destino: destino }, (err, vuelos) => {
+    res.send(vuelos);
   });
 })
-router.put('/vuelos/fecha/origen/:id', (req, res, next) => {
-  iberia.findOneAndUpdate(
-    { IdVuelo: req.params.id },
-    { $inc: {plazas: -1}}
-  ).then((Vuelos) => {
-    res.send(Vuelos);
-  }).error(function (err) {
-    console.log("Error:" + err);
-  });
+router.put('/vuelos/fecha/origen/:idVuelo', (req, res, next) => {
+  iberia.updateOne(
+    { idVuelo: req.params.idVuelo },
+    { $inc: { plazas: -1 } }, (err, vuelos) => {
+      res.send(vuelos);
+    });
 })
 export default router
