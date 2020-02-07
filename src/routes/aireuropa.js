@@ -1,5 +1,5 @@
 import express from 'express'
-import Sequelize from 'Sequelize'
+import Sequelize from 'sequelize'
 
 const sequelize = new Sequelize('aireuropa', 'root', '', {
   host: 'localhost',
@@ -14,35 +14,43 @@ const sequelize = new Sequelize('aireuropa', 'root', '', {
 const Vuelos = sequelize.define(
   'vuelos',
   {
-    IdVuelo: {
+    idVuelo: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       field: 'IdVuelo',
       primaryKey: true
     },
-    Origen: {
+    origen: {
       type: Sequelize.STRING,
       field: 'origen'
     },
-    Destino: {
+    destino: {
       type: Sequelize.STRING,
       field: 'destino'
     },
-    Fecha: {
+    fecha: {
       type: Sequelize.DATE,
       field: 'fecha'
     },
-    Hora: {
+    hora: {
       type: Sequelize.TIME,
       field: 'hora'
     },
-    Precio: {
+    precio: {
       type: Sequelize.INTEGER,
       field: 'precio'
     },
-    plazas: {
+    disponibles: {
       type: Sequelize.INTEGER,
-      field: 'plazas'
+      field: 'disponibles'
+    },
+    totales: {
+      type: Sequelize.INTEGER,
+      field: 'totales'
+    },
+    image: {
+      type: Sequelize.STRING,
+      field: 'image'
     }
   },
   {
@@ -51,63 +59,58 @@ const Vuelos = sequelize.define(
   }
 )
 
-
 const router = express.Router()
-router.
-  get('/vuelos/fecha/origen/', (req, res, next) => {
-    Vuelos.findAll().then((Vuelos) => {
-      res.send(Vuelos);
-    }).error(function (err) {
-      console.log("Error:" + err);
-    });
-  })
-router.
-  get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
-    const destino = req.params.destino;
-    const origen = req.params.origen;
-    Vuelos.findAll({
-      where: { Destino: destino, Origen: origen }
-    }).then((Vuelos) => {
-      res.send(Vuelos);
-    }).error(function (err) {
-      console.log("Error:" + err);
-    });
-  })
-/*
-router.post('/vuelos/fecha/origen/:destino', (req, res, next) => {
-  Vuelos.create({
-    NombreVuelos: req.body.NombreVuelos,
-    TipoVuelos: req.body.TipoVuelos
+//Get all
+router.get('/vuelos/fecha/origen/', (req, res, next) => {
+  Vuelos.findAll().then((Vuelos) => {
+    res.send(Vuelos);
+  }).error(function (err) {
+    console.log("Error:" + err);
+  });
+})
+
+//Get by origen & destino
+router.get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
+  const destino = req.params.destino;
+  const origen = req.params.origen;
+  Vuelos.findAll({
+    where: { Destino: destino, Origen: origen }
   }).then((Vuelos) => {
     res.send(Vuelos);
   }).error(function (err) {
     console.log("Error:" + err);
   });
 })
-router.delete('/:id', (req, res, next) => {
-  const id = req.params.id;
-  Vuelos.destroy({
-    where: { IdVuelo: id }
-  }).then(() => {
-    res.send('Eliminado correctamente');
+
+//Get by origen
+router.get('/vuelos/fecha/:origen', (req, res, next) => {
+  const origen = req.params.origen;
+  Vuelos.findAll({
+    where: { origen: origen }
+  }).then((Vuelos) => {
+    res.send(Vuelos);
   }).error(function (err) {
     console.log("Error:" + err);
   });
 })
-router.delete('/', (req, res, next) => {
-  Vuelos.destroy({
-    where: {},
-    truncate:true
-  }).then(() => {
-    res.send('Eliminados correctamente');
+
+//Get by destino
+router.get('/vuelos/fecha/origen/:destino', (req, res, next) => {
+  const destino = req.params.destino;
+  Vuelos.findAll({
+    where: { destino: destino }
+  }).then((Vuelos) => {
+    res.send(Vuelos);
   }).error(function (err) {
     console.log("Error:" + err);
   });
-})*/
-router.put('/vuelos/fecha/origen/:id', (req, res, next) => {
+})
+
+//Put & -1 disponible
+router.put('/vuelos/:idVuelo', (req, res, next) => {
   Vuelos.update(
-    { plazas: sequelize.literal('plazas - 1') },
-    { where: { IdVuelo: req.params.id } }
+    { disponibles: sequelize.literal('disponibles - 1') },
+    { where: { idVuelo: req.params.idVuelo } }
   ).then((Vuelos) => {
     res.send(Vuelos);
   }).error(function (err) {

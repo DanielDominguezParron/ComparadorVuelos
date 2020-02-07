@@ -35,20 +35,28 @@ const flySchema = new mongoose.Schema(
       type: String,
       trim: true, required: true
     },
-    Fecha: {
+    fecha: {
       type: Date,
       trim: true, required: true
     },
-    Hora: {
+    hora: {
       type: String,
       trim: true, required: true
     },
-    Precio: {
+    precio: {
       type: Number,
       trim: true, required: true
     },
-    plazas: {
+    disponibles: {
       type: Number,
+      trim: true, required: true
+    },
+    totales: {
+      type: Number,
+      trim: true, required: true
+    },
+    images: {
+      type: String,
       trim: true, required: true
     }
   },
@@ -58,14 +66,15 @@ const flySchema = new mongoose.Schema(
 )
 
 const iberia = connection.model('vuelos', flySchema)
-
-
 const router = express.Router()
-router.
-  get('/vuelos/fecha/origen/', (req, res, next) => {
-    iberia.find({}, (err, vuelos) =>
-      res.send(vuelos));
-  })
+
+//Get all
+router.get('/vuelos/fecha/origen/', (req, res, next) => {
+  iberia.find({}, (err, vuelos) =>
+    res.send(vuelos));
+})
+
+//Get by origen & destino
 router.get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
   const destino = req.params.destino;
   const origen = req.params.origen;
@@ -73,11 +82,38 @@ router.get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
     res.send(vuelos);
   });
 })
-router.put('/vuelos/fecha/origen/:idVuelo', (req, res, next) => {
+
+//Put by idVeulo
+router.put('/vuelos/:idVuelo', (req, res, next) => {
   iberia.updateOne(
     { idVuelo: req.params.idVuelo },
-    { $inc: { plazas: -1 } }, (err, vuelos) => {
+    { $inc: { disponibles: -1 } }, (err, vuelos) => {
       res.send(vuelos);
     });
 })
+/*
+//Put temporal
+router.put('/vuelos/:id', (req, res) => {
+  const id = req.params.id;
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!"
+    });
+  }
+
+  iberia.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    .then(vuelo => {
+      if (!vuelo) {
+        res.status(404).send({
+          message: `Cannot update with  this id: ${id}!`
+        });
+      } else res.send({ message: "The flight booking was accepted successfully." });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating iberia vuelos with id=" + id
+      });
+    });
+})
+*/
 export default router
