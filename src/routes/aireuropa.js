@@ -17,7 +17,7 @@ const Vuelos = sequelize.define(
     idVuelo: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
-      field: 'IdVuelo',
+      field: 'idVuelo',
       primaryKey: true
     },
     origen: {
@@ -40,13 +40,13 @@ const Vuelos = sequelize.define(
       type: Sequelize.INTEGER,
       field: 'precio'
     },
-    disponibles: {
+    plazasDisponibles: {
       type: Sequelize.INTEGER,
-      field: 'disponibles'
+      field: 'plazasDisponibles'
     },
-    totales: {
+    plazasTotales: {
       type: Sequelize.INTEGER,
-      field: 'totales'
+      field: 'plazasTotales'
     },
     image: {
       type: Sequelize.STRING,
@@ -109,7 +109,7 @@ router.get('/vuelos/fecha/origen/:destino', (req, res, next) => {
 //Put & -1 disponible
 router.put('/vuelos/:idVuelo', (req, res, next) => {
   Vuelos.update(
-    { disponibles: sequelize.literal('disponibles - 1') },
+    { plazasDisponibles: sequelize.literal('plazasDisponibles - 1') },
     { where: { idVuelo: req.params.idVuelo } }
   ).then((Vuelos) => {
     res.send(Vuelos);
