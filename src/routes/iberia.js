@@ -1,5 +1,6 @@
 import express from 'express'
 import mongoose from 'mongoose'
+import { auth } from '../middlewares'
 
 const host = 'mongodb://127.0.0.1:27017/comparadorvuelos'
 
@@ -84,7 +85,7 @@ router.get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
 })
 
 //Put by idVeulo
-router.put('/vuelos/:idVuelo', (req, res, next) => {
+router.put('/vuelos/:idVuelo', auth, (req, res, next) => {
   iberia.updateOne(
     { idVuelo: req.params.idVuelo },
     { $inc: { disponibles: -1 } }, (err, vuelos) => {
