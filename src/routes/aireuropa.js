@@ -1,6 +1,6 @@
 import express from 'express'
 import Sequelize from 'sequelize'
-
+import auth from '../middlewares'
 const sequelize = new Sequelize('aireuropa', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
@@ -40,13 +40,13 @@ const Vuelos = sequelize.define(
       type: Sequelize.INTEGER,
       field: 'precio'
     },
-    plazasDisponibles: {
+    disponibles: {
       type: Sequelize.INTEGER,
-      field: 'plazasDisponibles'
+      field: 'disponibles'
     },
-    plazasTotales: {
+    totales: {
       type: Sequelize.INTEGER,
-      field: 'plazasTotales'
+      field: 'totales'
     },
     image: {
       type: Sequelize.STRING,
@@ -107,9 +107,9 @@ router.get('/vuelos/fecha/origen/:destino', (req, res, next) => {
 })
 
 //Put & -1 disponible
-router.put('/vuelos/:idVuelo', (req, res, next) => {
+router.put('/vuelos/:idVuelo', auth,(req, res, next) => {
   Vuelos.update(
-    { plazasDisponibles: sequelize.literal('plazasDisponibles - 1') },
+    { disponibles: sequelize.literal('disponibles - 1') },
     { where: { idVuelo: req.params.idVuelo } }
   ).then((Vuelos) => {
     res.send(Vuelos);

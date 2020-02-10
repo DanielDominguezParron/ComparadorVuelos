@@ -1,17 +1,23 @@
-  
+import express from 'express'
 import jwt from 'jsonwebtoken'
 
-export const auth = (req, res, next) => {
-  if (!req.headers.authorization) {
-    return res
-      .status(403)
-      .send({ message: 'No authenticate' })
+const auth = express.Router();
+auth.use((req, res, next) => {
+  const token = req.headers['access-token'];
+
+  if (token) {
+    jwt.verify(token, req.app.locals.config.TOKEN, (err, decoded) => {
+      if (err) {
+        return res.json({ mensaje: 'Token inválido' });
+      } else {
+        req.decoded = decoded;
+        next();
+      }
+    });
+  } else {
+    res.send({
+      mensaje: 'Token no proveído.'
+    });
   }
-
-  const token = req.headers.authorization.split(' ')[1]
-  const payload = jwt.decode(token, req.app.locals.config.TOKEN)
-
-  req.user = payload.email
-
-  next()
-}
+});
+export default auth

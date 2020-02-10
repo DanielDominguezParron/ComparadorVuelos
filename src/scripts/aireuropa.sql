@@ -21,7 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `aireuropa`
 --
-
+CREATE DATABASE IF NOT EXISTS `aireuropa` DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+USE `aireuropa`;
 -- --------------------------------------------------------
 
 --
