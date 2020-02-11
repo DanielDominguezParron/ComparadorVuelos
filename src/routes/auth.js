@@ -4,7 +4,7 @@ const router = express.Router()
 
 router
     .post('/', (req, res, next) => {
-        if (req.body.usuario === "julio") {
+        if (req.body.usuario === "paco") {
             const payload = {
                 check: true
             };

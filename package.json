@@ -13,12 +13,8 @@
   },
   "homepage": "",
   "author": {
-    "name": "José Manuel Rosa Moncayo",
-    "email": "josemanuel.rosamoncayo@gmail.com"
-  },
-  "bugs": {
-    "url": "https://github.com/jmanuelrosa/curso-nodejs-openwebinars/issues",
-    "email": "josemanuel.rosamoncayo@gmail.com"
+    "name": "Daniel Dominguez Parron",
+    "email": "danixntl@gmail.com"
   },
   "engines": {
     "node": ">= 9.3.0",
