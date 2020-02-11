@@ -51,6 +51,10 @@ const Vuelos = sequelize.define(
     image: {
       type: Sequelize.STRING,
       field: 'image'
+    },
+    compania: {
+      type: Sequelize.STRING,
+      field: 'compania'
     }
   },
   {
