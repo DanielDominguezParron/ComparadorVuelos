@@ -70,8 +70,14 @@ const router = express.Router()
 
 //Get all
 router.get('/vuelos/fecha/origen/', (req, res, next) => {
-  iberia.find({}, (err, vuelos) =>
-    res.send(vuelos));
+  iberia.find({}, (err, vuelos) => {
+    if (err) {
+      res.status(500).send({ error: err });
+    }
+    else {
+      res.send(vuelos);
+    }
+  });
 })
 
 //Get by origen & destino
@@ -79,7 +85,12 @@ router.get('/vuelos/fecha/:origen/:destino', (req, res, next) => {
   const destino = req.params.destino;
   const origen = req.params.origen;
   iberia.find({ origen: origen, destino: destino }, (err, vuelos) => {
-    res.send(vuelos);
+    if (err) {
+      res.status(500).send({ error: err });
+    }
+    else {
+      res.send(vuelos);
+    }
   });
 })
 
@@ -88,32 +99,12 @@ router.put('/vuelos/:idVuelo', auth, (req, res, next) => {
   iberia.updateOne(
     { idVuelo: req.params.idVuelo },
     { $inc: { disponibles: -1 } }, (err, vuelos) => {
-      res.send(vuelos);
+      if (err) {
+        res.status(500).send({ error: err });
+      }
+      else {
+        res.send(vuelos);
+      }
     });
 })
-/*
-//Put temporal
-router.put('/vuelos/:id', (req, res) => {
-  const id = req.params.id;
-  if (!req.body) {
-    return res.status(400).send({
-      message: "Data to update can not be empty!"
-    });
-  }
-
-  iberia.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-    .then(vuelo => {
-      if (!vuelo) {
-        res.status(404).send({
-          message: `Cannot update with  this id: ${id}!`
-        });
-      } else res.send({ message: "The flight booking was accepted successfully." });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating iberia vuelos with id=" + id
-      });
-    });
-})
-*/
 export default router
